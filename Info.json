@@ -1,0 +1,7 @@
+{
+  "Id": "HueDebugging",
+  "DisplayName" : "Hue Debugging",
+  "Author": "Modiseus",
+  "Version": "1.0.0",
+  "EntryMethod": "HueDebugging.Main.Load"
+}
