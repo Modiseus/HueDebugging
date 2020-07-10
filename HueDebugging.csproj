@@ -51,7 +51,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawUtil.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,4 +58,8 @@
     <None Include="Info.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Hue\Mods\$(ProjectName)\"
+XCOPY /Y /R "$(ProjectDir)Info.json" "C:\Program Files (x86)\Steam\steamapps\common\Hue\Mods\$(ProjectName)\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
