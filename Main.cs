@@ -60,8 +60,6 @@ namespace HueDebugging
 
         }
 
-        public static int floorMask = 0;
-
 
     }
 
@@ -74,7 +72,6 @@ namespace HueDebugging
             float ___circleColliderHeight, LayerMask ___floorLayerMask, float ___maxSlopeAngle)
         {
 
-            Main.floorMask = ___floorLayerMask;
 
             for (int i = 0; i < ___floorRays; i++)
             {
