@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
@@ -10,8 +11,46 @@ namespace HueDebugging
     public static class CollisionDrawer
     {
 
-        public static bool drawTriggers = false;
         public static bool drawBounds = false;
+        public static int circleEdgeCount = 20;
+
+
+        public static void DrawAllColliders()
+        {
+            GameManager gm = GameManager.instance;
+            if (gm == null)
+            {
+                return;
+            }
+
+            PlayerNew player = gm.Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            Vector3 pos = player.circleCollider.bounds.center;
+            var colls = Physics2D.OverlapCircleAll(pos, Main.settings.DrawRadius, Main.settings.LayerCollisionMask);
+
+            foreach (var collider in colls)
+            {
+
+                if (collider.isTrigger)
+                {
+                    if (Main.settings.DrawTriggers)
+                    {
+                        DrawCollider(collider, Color.yellow);
+                    }
+                }
+                else
+                {
+                    DrawCollider(collider, Color.white);
+                }
+
+
+            }
+
+        }
 
         private static void DrawCollider(Collider2D col, Color color)
         {
@@ -20,16 +59,17 @@ namespace HueDebugging
             {
                 DrawBox((BoxCollider2D)col, color);
             }
-            else if (col.GetType() == typeof(CircleCollider2D))
-            {
-                //DrawCircle((CircleCollider2D)col, color); //TODO improve performance
-            }
             else if (col.GetType() == typeof(PolygonCollider2D))
             {
                 DrawPolygon((PolygonCollider2D)col, color);
-            }else if(col.GetType() == typeof(EdgeCollider2D))
+            }
+            else if (col.GetType() == typeof(EdgeCollider2D))
             {
                 DrawEdge((EdgeCollider2D)col, color);
+            }
+            else if (col.GetType() == typeof(CircleCollider2D))
+            {
+                DrawCircle((CircleCollider2D)col, color);
             }
 
 
@@ -41,7 +81,7 @@ namespace HueDebugging
 
         }
 
-        private static void DrawEdge(EdgeCollider2D col, Color color)
+        public static void DrawEdge(EdgeCollider2D col, Color color)
         {
             List<Vector2> list = new List<Vector2>();
             foreach (var point in col.points)
@@ -58,10 +98,9 @@ namespace HueDebugging
                 DrawUtil.DrawLine(last, current, color);
                 last = current;
             }
-            //DrawUtil.DrawLine(last, list[0], color);
         }
 
-        private static void DrawPolygon(PolygonCollider2D col, Color color)
+        public static void DrawPolygon(PolygonCollider2D col, Color color)
         {
 
             List<Vector2> list = new List<Vector2>();
@@ -73,7 +112,7 @@ namespace HueDebugging
 
             Vector2 last = list[0];
             Vector2 current;
-            for(int i = 1; i < list.Count; i++)
+            for (int i = 1; i < list.Count; i++)
             {
                 current = list[i];
                 DrawUtil.DrawLine(last, current, color);
@@ -82,23 +121,21 @@ namespace HueDebugging
             DrawUtil.DrawLine(last, list[0], color);
         }
 
-        private static void DrawCircle(CircleCollider2D col, Color color)
+        public static void DrawCircle(CircleCollider2D col, Color color)
         {
-            Vector2 last = col.transform.TransformPoint(col.radius * new Vector2(1, 0));
+            Vector2 last = col.transform.TransformPoint(col.radius * new Vector2(1, 0) + col.offset);
             Vector2 current;
-            int count = 10;
-            for (int i = 1; i <= count; i++)
+            for (int i = 1; i <= circleEdgeCount; i++)
             {
 
-                double rad = i * 2.0 * Math.PI / count;
+                double rad = i * 2.0 * Math.PI / circleEdgeCount;
 
                 float x = Convert.ToSingle(Math.Cos(rad));
                 float y = Convert.ToSingle(Math.Sin(rad));
 
-                x += col.offset.x;
-                y += col.offset.y;
+                Vector2 worldPos = col.radius * new Vector2(x, y) + col.offset;
 
-                current = col.transform.TransformPoint(col.radius * new Vector2(x, y));
+                current = col.transform.TransformPoint(worldPos);
 
                 DrawUtil.DrawLine(last, current, color);
 
@@ -108,7 +145,7 @@ namespace HueDebugging
 
         }
 
-        private static void DrawBox(BoxCollider2D col, Color color)
+        public static void DrawBox(BoxCollider2D col, Color color)
         {
             float x = col.size.x / 2.0f;
             float y = col.size.y / 2.0f;
@@ -129,7 +166,7 @@ namespace HueDebugging
 
         }
 
-        private static void DrawBounds(Bounds bounds, Color color)
+        public static void DrawBounds(Bounds bounds, Color color)
         {
             Vector2 v0 = bounds.min;
             Vector2 v1 = new Vector2(bounds.min.x, bounds.max.y);
@@ -144,41 +181,6 @@ namespace HueDebugging
         }
 
 
-        public static void DrawAllColliders()
-        {
-            GameManager gm = GameManager.instance;
-            if (gm == null)
-            {
-                return;
-            }
-
-            PlayerNew player = gm.Player;
-            if (player == null)
-            {
-                return;
-            }
-
-            Vector3 pos = player.circleCollider.bounds.center;
-            var colls = Physics2D.OverlapCircleAll(pos, 2);
-
-            foreach (var collider in colls)
-            {
-                if (collider.isTrigger)
-                {
-                    if (drawTriggers)
-                    {
-                        DrawCollider(collider, Color.yellow);
-                    }
-                }
-                else
-                {
-                    DrawCollider(collider, Color.white);
-                }
-
-
-            }
-
-        }
 
     }
 

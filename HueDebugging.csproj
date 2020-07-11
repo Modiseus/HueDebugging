@@ -54,7 +54,9 @@
     <Compile Include="CollisionDrawer.cs" />
     <Compile Include="DrawUtil.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="PlayerCollision.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.json" />

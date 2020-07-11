@@ -31,6 +31,7 @@ namespace HueDebugging
 
         }
 
+
         private static Vector2 scrollPosition = Vector2.zero;
 
         public static Texture2D lineTex;
@@ -61,6 +62,12 @@ namespace HueDebugging
             lineDict[key] = line;
 
         }
+
+
+        public static void DrawLine(Line line)
+        {
+            DrawLine(line.pointA, line.pointB, line.color);
+        }
         public static void DrawLine(Vector3 pointA, Vector3 pointB, Color color)
         {
             DrawLine(pointA, pointB, color, 1);
@@ -80,6 +87,8 @@ namespace HueDebugging
 
             pointB.x = (float)Math.Round(pointB.x);
             pointB.y = (float)Math.Round(pointB.y);
+
+            // See https://wiki.unity3d.com/index.php/DrawLine
 
             // Save the current GUI matrix, since we're going to make changes to it.
             Matrix4x4 matrix = GUI.matrix;

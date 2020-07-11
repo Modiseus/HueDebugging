@@ -7,13 +7,22 @@ using System.Reflection;
 using UnityEngine;
 using UnityModManagerNet;
 
+
 namespace HueDebugging
 {
 
     public static class Main
     {
+        public static Settings settings;
+
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
+
+            settings = Settings.Load<Settings>(modEntry);
+
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
+
 
             modEntry.OnToggle = OnToggle;
             modEntry.OnFixedGUI = OnFixedGUI;
@@ -22,6 +31,26 @@ namespace HueDebugging
 
             return true;
         }
+
+
+
+        static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Draw(modEntry);
+            if(GUILayout.Button("Reset Layers"))
+            {
+                settings.maskSettings.SetToDefaultMask();
+            }
+        }
+
+        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            settings.Save(modEntry);
+        }
+
+
+
+
 
         private static void OnFixedUpdate(UnityModManager.ModEntry modEntry, float dt)
         {
@@ -55,74 +84,15 @@ namespace HueDebugging
             {
                 CollisionDrawer.DrawAllColliders();
 
+                PlayerCollision.OnFixedGUI();
+
                 DrawUtil.OnFixedGUI();
             }
 
         }
 
 
-    }
-
-
-    [HarmonyPatch(typeof(PlayerNew), "lineCastHighestHit")]
-    public static class GroundCollision
-    {
-
-        public static void Prefix(PlayerNew __instance, int ___floorRays, CircleCollider2D ___circleCollider, float ___circleColliderWidth,
-            float ___circleColliderHeight, LayerMask ___floorLayerMask, float ___maxSlopeAngle)
-        {
-
-
-            for (int i = 0; i < ___floorRays; i++)
-            {
-                RaycastHit2D highestHit = default(RaycastHit2D);
-                float x = ___circleCollider.bounds.min.x + ___circleColliderWidth / (float)(___floorRays - 1) * (float)i;
-                Vector2 vector = new Vector2(x, __instance.transform.position.y);
-                Vector2 vector2 = new Vector2(x, __instance.transform.position.y - ___circleColliderHeight);
-
-                RaycastHit2D[] array = Physics2D.LinecastAll(vector, vector2, ___floorLayerMask);
-                foreach (RaycastHit2D raycastHit in array)
-                {
-                    raycastHit.collider.GetComponent<BouncyBlock>();
-                    if (raycastHit.collider && !raycastHit.collider.isTrigger)
-                    {
-
-
-                        float floorAngle = Vector2.Angle(Vector2.up, raycastHit.normal);
-                        raycastHit.collider.GetComponent<Rigidbody2D>();
-                        FloatUpwards component = raycastHit.collider.GetComponent<FloatUpwards>();
-                        if (floorAngle < ___maxSlopeAngle && raycastHit.point.y < __instance.transform.position.y && !component)
-                        {
-
-                            if (!highestHit.collider)
-                            {
-                                highestHit = raycastHit;
-                                //this.standingMaterial = raycastHit2D2.collider.sharedMaterial;
-                            }
-                            if (raycastHit.point.y > highestHit.point.y)
-                            {
-                                highestHit = raycastHit;
-                                //this.standingMaterial = raycastHit2D2.collider.sharedMaterial;
-                            }
-                        }
-                    }
-                }
-
-
-                if (highestHit.collider)
-                {
-                    DrawUtil.AddLine("ground" + i, vector, vector2, Color.green);
-                }
-                else
-                {
-                    DrawUtil.AddLine("ground" + i, vector, vector2, Color.red);
-                }
-
-            }
-        }
 
     }
-
-
 
 }
