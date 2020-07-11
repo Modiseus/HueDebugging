@@ -28,9 +28,7 @@ namespace HueDebugging
 
         private static void OnFixedUpdate(UnityModManager.ModEntry arg1, float arg2)
         {
-            Vector3 pos = GameManager.instance.Player.transform.position;
-            Vector3 end = pos + new Vector3(1,1,0);
-            AddLine("player", pos, end, Color.white);
+           
         }
 
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool toggle)
@@ -53,18 +51,12 @@ namespace HueDebugging
 
         private static void OnFixedGUI(UnityModManager.ModEntry modEntry)
         {
-            //Debug.Log(startList.Count);
-            //Debug.Log(endList.Count);
-            //Debug.Log(colorList.Count);
-
-            //GUILayout.Label(startList.Count.ToString());
-
-
-
+            
             foreach (var pair in lineDict)
             {
                 Line line = pair.Value;
-                DrawLine(line.pointA, line.pointB, line.color, 10);
+                GUILayout.Label(pair.Key);
+                DrawLine(line.pointA, line.pointB, line.color, 1);
             }
 
         }
@@ -88,10 +80,20 @@ namespace HueDebugging
 
         }
 
-        private static void DrawLine(Vector2 start, Vector2 end, Color color, float width)
+        private static void DrawLine(Vector3 pointA, Vector3 pointB, Color color, float width)
         {
-            Vector2 pointA = Camera.main.WorldToScreenPoint(start);
-            Vector2 pointB = Camera.main.WorldToScreenPoint(end);
+
+            pointA = Camera.current.WorldToScreenPoint(pointA);
+            pointA.y = Screen.height - pointA.y;
+
+            pointA.x = (float)Math.Round(pointA.x);
+            pointA.y = (float)Math.Round(pointA.y);
+
+            pointB = Camera.current.WorldToScreenPoint(pointB);
+            pointB.y = Screen.height - pointB.y;
+
+            pointB.x = (float)Math.Round(pointB.x);
+            pointB.y = (float)Math.Round(pointB.y);
 
             // Save the current GUI matrix, since we're going to make changes to it.
             Matrix4x4 matrix = GUI.matrix;
@@ -138,6 +140,8 @@ namespace HueDebugging
 
 
 
+
+
     [HarmonyPatch(typeof(Debug), "DrawLine", new Type[] { typeof(Vector3), typeof(Vector3), typeof(Color) })]
     public static class DebugDraw
     {
@@ -145,13 +149,14 @@ namespace HueDebugging
 
         public static void Prefix(Vector3 start, Vector3 end, Color color)
         {
-            Camera.main.WorldToScreenPoint(start);
-           
-            Main.AddLine("TEST",start, end, color);
+            
+            //Main.AddLine("TEST",start, end, color);
 
         }
 
 
     }
+
+
 
 }
