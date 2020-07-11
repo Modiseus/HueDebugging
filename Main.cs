@@ -26,9 +26,11 @@ namespace HueDebugging
             return true;
         }
 
-        private static void OnFixedUpdate(UnityModManager.ModEntry arg1, float arg2)
+        private static void OnFixedUpdate(UnityModManager.ModEntry modEntry, float dt)
         {
-           
+            if (modEntry.Active)
+            {
+            }
         }
 
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool toggle)
@@ -43,7 +45,7 @@ namespace HueDebugging
                 harmony.UnpatchAll(modEntry.Info.Id);
             }
 
-            
+
 
             return true;
         }
@@ -51,12 +53,14 @@ namespace HueDebugging
 
         private static void OnFixedGUI(UnityModManager.ModEntry modEntry)
         {
-            
-            foreach (var pair in lineDict)
+            if (modEntry.Active)
             {
-                Line line = pair.Value;
-                GUILayout.Label(pair.Key);
-                DrawLine(line.pointA, line.pointB, line.color, 1);
+
+                foreach (var pair in lineDict)
+                {
+                    Line line = pair.Value;
+                    DrawLine(line.pointA, line.pointB, line.color, 1);
+                }
             }
 
         }
@@ -82,7 +86,7 @@ namespace HueDebugging
 
         private static void DrawLine(Vector3 pointA, Vector3 pointB, Color color, float width)
         {
-
+            //transform from world to screen coordinates
             pointA = Camera.current.WorldToScreenPoint(pointA);
             pointA.y = Screen.height - pointA.y;
 
@@ -142,18 +146,64 @@ namespace HueDebugging
 
 
 
-    [HarmonyPatch(typeof(Debug), "DrawLine", new Type[] { typeof(Vector3), typeof(Vector3), typeof(Color) })]
+    [HarmonyPatch(typeof(PlayerNew), "lineCastHighestHit")]
     public static class DebugDraw
     {
 
-
-        public static void Prefix(Vector3 start, Vector3 end, Color color)
+        public static void Prefix(PlayerNew __instance, int ___floorRays, CircleCollider2D ___circleCollider, float ___circleColliderWidth,
+            float ___circleColliderHeight, LayerMask ___floorLayerMask, float ___maxSlopeAngle)
         {
-            
+
             //Main.AddLine("TEST",start, end, color);
 
-        }
+            for (int i = 0; i < ___floorRays; i++)
+            {
+                RaycastHit2D highestHit = default(RaycastHit2D);
+                float x = ___circleCollider.bounds.min.x + ___circleColliderWidth / (float)(___floorRays - 1) * (float)i;
+                Vector2 vector = new Vector2(x, __instance.transform.position.y);
+                Vector2 vector2 = new Vector2(x, __instance.transform.position.y - ___circleColliderHeight);
 
+                RaycastHit2D[] array = Physics2D.LinecastAll(vector, vector2, ___floorLayerMask);
+                foreach (RaycastHit2D raycastHit in array)
+                {
+                    raycastHit.collider.GetComponent<BouncyBlock>();
+                    if (raycastHit.collider && !raycastHit.collider.isTrigger)
+                    {
+
+
+                        float floorAngle = Vector2.Angle(Vector2.up, raycastHit.normal);
+                        raycastHit.collider.GetComponent<Rigidbody2D>();
+                        FloatUpwards component = raycastHit.collider.GetComponent<FloatUpwards>();
+                        if (floorAngle < ___maxSlopeAngle && raycastHit.point.y < __instance.transform.position.y && !component)
+                        {
+                            if (!highestHit.collider)
+                            {
+                                highestHit = raycastHit;
+                                //this.standingMaterial = raycastHit2D2.collider.sharedMaterial;
+                            }
+                            if (raycastHit.point.y > highestHit.point.y)
+                            {
+                                highestHit = raycastHit;
+                                //this.standingMaterial = raycastHit2D2.collider.sharedMaterial;
+                            }
+                        }
+                    }
+                }
+
+
+                if (highestHit.collider)
+                {
+                    Main.AddLine("ground" + i, vector, vector2, Color.green);
+                }
+                else
+                {
+                    Main.AddLine("ground" + i, vector, vector2, Color.red);
+                }
+
+
+
+            }
+        }
 
     }
 
