@@ -1,42 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityModManagerNet;
 
 namespace HueDebugging
 {
-    public class Settings : UnityModManager.ModSettings, IDrawable
+    public enum LayerPreset
     {
-        [Draw("Draw Triggers")] public bool DrawTriggers = false;
-        [Draw("Draw Radius", Min = 0.5, Max = 10, Precision = 1)] public float DrawRadius = 4;
-
-        [Draw("Selected Layers", Collapsible = true)] public MaskSettings maskSettings = new MaskSettings();
-
-        public int LayerCollisionMask;
-
-        public override void Save(UnityModManager.ModEntry modEntry)
-        {
-            Save(this, modEntry);
-        }
-
-        public void OnChange()
-        {
-            LayerCollisionMask = maskSettings.GetMask();
-            Debug.Log(LayerCollisionMask);
-        }
-
+        Default, None, All, Custom
     }
 
     [DrawFields(DrawFieldMask.Public)]
-    public class MaskSettings
+    public class LayerList
     {
-        public bool TransparentFX = false;
-        public bool IgnoreRaycast = false;
-        public bool Water = false;
-        public bool UI = false;
-        public bool Player = false;
         public bool Triggers = false;
         public bool Slices = false;
         public bool Scenery = false;
@@ -61,74 +35,109 @@ namespace HueDebugging
         public bool ParticleColliders = false;
         public bool InteractiveNonColour = false;
 
-        private bool[] layers;
+    }
+    public class Settings : UnityModManager.ModSettings, IDrawable
+    {
+        [Draw("Drawing Radius", Min = 0.5, Max = 10, Precision = 1)] public float DrawRadius = 4;
+        [Draw("Draw Player Collision")] public bool PlayerGroundCheck = true;
+        [Draw("Draw Triggers")] public bool DrawTriggers = false;
+
+        [Header("Layer Drawing")]
+        [Draw("Preset", DrawType.ToggleGroup)] public LayerPreset Preset = LayerPreset.Default;
+
+        [Draw("", VisibleOn = "Preset|Custom")] public LayerList LayerSettings = GetDefaultLayerSettings();
+
+
+        public override void Save(UnityModManager.ModEntry modEntry)
+        {
+            Save(this, modEntry);
+        }
+
+        public void OnChange()
+        {
+            switch (Preset)
+            {
+                case LayerPreset.None:
+                    LayerSettings = new LayerList();
+                    break;
+                case LayerPreset.Default:
+                    LayerSettings = GetDefaultLayerSettings();
+                    break;
+                case LayerPreset.All:
+                    LayerSettings = new LayerList()
+                    {
+                        Triggers = true,
+                        Slices = true,
+                        Scenery = true,
+                        Audio = true,
+                        PlayerCollider = true,
+                        Overlay = true,
+                        ColouredObjects = true,
+                        Background = true,
+                        Ladders = true,
+                        PlayerTopCollider = true,
+                        CollideWithHiddenColours = true,
+                        FabricPlayerEvents = true,
+                        ColouredObjectsHidden = true,
+                        Lasers = true,
+                        PlayerRagdoll = true,
+                        Trinkets = true,
+                        TrinketColliders = true,
+                        TrinketNoSelfCollide = true,
+                        Locked = true,
+                        SceneryBehindColours = true,
+                        InfrontColours = true,
+                        ParticleColliders = true,
+                        InteractiveNonColour = true
+                    };
+                    break;
+
+            }
+        }
+
+        private static LayerList GetDefaultLayerSettings()
+        {
+            return new LayerList() { Scenery = true, ColouredObjects = true, Ladders = true, InteractiveNonColour = true};
+        }
 
         public int GetMask()
         {
-            if(layers == null)
-            {
-                Setup();
-            }
-
             int mask = 0;
 
-            for (int i = 0; i < layers.Length; i++)
-            {
-                if (layers[i])
-                {
-                    mask |= 1 << (i + 1);
-                }
-            }
+            mask = LayerSettings.Triggers ? SetLayer(9, ref mask) : mask;
+            mask = LayerSettings.Slices ? SetLayer(10, ref mask) : mask;
+            mask = LayerSettings.Scenery ? SetLayer(11, ref mask) : mask;
+            mask = LayerSettings.Audio ? SetLayer(12, ref mask) : mask;
+            mask = LayerSettings.PlayerCollider ? SetLayer(13, ref mask) : mask;
+            mask = LayerSettings.Overlay ? SetLayer(14, ref mask) : mask;
+            mask = LayerSettings.ColouredObjects ? SetLayer(15, ref mask) : mask;
+            mask = LayerSettings.Background ? SetLayer(16, ref mask) : mask;
+            mask = LayerSettings.Ladders ? SetLayer(17, ref mask) : mask;
+            mask = LayerSettings.PlayerTopCollider ? SetLayer(18, ref mask) : mask;
+            mask = LayerSettings.CollideWithHiddenColours ? SetLayer(19, ref mask) : mask;
+            mask = LayerSettings.FabricPlayerEvents ? SetLayer(20, ref mask) : mask;
+            mask = LayerSettings.ColouredObjectsHidden ? SetLayer(21, ref mask) : mask;
+            mask = LayerSettings.Lasers ? SetLayer(22, ref mask) : mask;
+            mask = LayerSettings.PlayerRagdoll ? SetLayer(23, ref mask) : mask;
+            mask = LayerSettings.Trinkets ? SetLayer(24, ref mask) : mask;
+            mask = LayerSettings.TrinketColliders ? SetLayer(25, ref mask) : mask;
+            mask = LayerSettings.TrinketNoSelfCollide ? SetLayer(26, ref mask) : mask;
+            mask = LayerSettings.Locked ? SetLayer(27, ref mask) : mask;
+            mask = LayerSettings.SceneryBehindColours ? SetLayer(28, ref mask) : mask;
+            mask = LayerSettings.InfrontColours ? SetLayer(29, ref mask) : mask;
+            mask = LayerSettings.ParticleColliders ? SetLayer(30, ref mask) : mask;
+            mask = LayerSettings.InteractiveNonColour ? SetLayer(31, ref mask) : mask;
+
 
             return mask;
         }
 
-        private void Setup()
+        private int SetLayer(int layer, ref int mask)
         {
-           layers = new bool[] {
-                TransparentFX           ,
-                IgnoreRaycast           ,
-                Water                   ,
-                UI                      ,
-                Player                  ,
-                Triggers                ,
-                Slices                  ,
-                Scenery                 ,
-                Audio                   ,
-                PlayerCollider          ,
-                Overlay                 ,
-                ColouredObjects         ,
-                Background              ,
-                Ladders                 ,
-                PlayerTopCollider       ,
-                CollideWithHiddenColours,
-                FabricPlayerEvents      ,
-                ColouredObjectsHidden   ,
-                Lasers                  ,
-                PlayerRagdoll           ,
-                Trinkets                ,
-                TrinketColliders        ,
-                TrinketNoSelfCollide    ,
-                Locked                  ,
-                SceneryBehindColours    ,
-                InfrontColours          ,
-                ParticleColliders       ,
-                InteractiveNonColour
-           };
+            return mask | 1 << layer;
         }
 
-        public void SetToDefaultMask()
-        {
-            for (int i = 0; i < layers.Length; i++)
-            {
-                layers[i] = false;
-            }
-
-            layers[LayerMask.NameToLayer("Scenery")] = true;
-            layers[LayerMask.NameToLayer("ColouredObjects")] = true;
-            layers[LayerMask.NameToLayer("Ladders")] = true;
-            layers[LayerMask.NameToLayer("InteractiveNonColour")] = true;
-
-        }
     }
+
+
 }

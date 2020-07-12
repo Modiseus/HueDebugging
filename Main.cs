@@ -1,10 +1,5 @@
 ﻿
 using HarmonyLib;
-using InControl;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 using UnityModManagerNet;
 
 
@@ -32,25 +27,15 @@ namespace HueDebugging
             return true;
         }
 
-
-
-        static void OnGUI(UnityModManager.ModEntry modEntry)
+        public static void OnGUI(UnityModManager.ModEntry modEntry)
         {
             settings.Draw(modEntry);
-            if(GUILayout.Button("Reset Layers"))
-            {
-                settings.maskSettings.SetToDefaultMask();
-            }
         }
 
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        public static void OnSaveGUI(UnityModManager.ModEntry modEntry)
         {
             settings.Save(modEntry);
         }
-
-
-
-
 
         private static void OnFixedUpdate(UnityModManager.ModEntry modEntry, float dt)
         {
@@ -72,8 +57,6 @@ namespace HueDebugging
                 harmony.UnpatchAll(modEntry.Info.Id);
             }
 
-
-
             return true;
         }
 
@@ -84,15 +67,15 @@ namespace HueDebugging
             {
                 CollisionDrawer.DrawAllColliders();
 
-                PlayerCollision.OnFixedGUI();
+                if (settings.PlayerGroundCheck)
+                {
+                    PlayerCollision.OnFixedGUI();
+                }
+                
 
                 DrawUtil.OnFixedGUI();
             }
 
         }
-
-
-
     }
-
 }

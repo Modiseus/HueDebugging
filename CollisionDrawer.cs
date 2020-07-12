@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using UnityEngine;
 
 namespace HueDebugging
@@ -30,7 +27,7 @@ namespace HueDebugging
             }
 
             Vector3 pos = player.circleCollider.bounds.center;
-            var colls = Physics2D.OverlapCircleAll(pos, Main.settings.DrawRadius, Main.settings.LayerCollisionMask);
+            var colls = Physics2D.OverlapCircleAll(pos, Main.settings.DrawRadius, Main.settings.GetMask());
 
             foreach (var collider in colls)
             {

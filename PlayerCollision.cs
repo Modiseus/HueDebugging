@@ -22,7 +22,6 @@ namespace HueDebugging
                 DrawUtil.DrawLine(line);
             }
 
-            lineList.Clear();
 
             GameManager gm = GameManager.instance;
             if (gm == null)
@@ -44,16 +43,9 @@ namespace HueDebugging
         public static void Prefix(PlayerNew __instance, int ___floorRays, CircleCollider2D ___circleCollider, float ___circleColliderWidth,
             float ___circleColliderHeight, LayerMask ___floorLayerMask, float ___maxSlopeAngle)
         {
-            //DrawUtil.AddText("floor mask", Convert.ToString(___floorLayerMask, 2));
 
-            //for (int layer = 0; layer < 32; layer++)
-            //{
-            //    if ((___floorLayerMask & (1 << layer)) != 0)
-            //    {
-            //        DrawUtil.AddText("floor mask layer " + layer, LayerMask.LayerToName(layer));
-            //    }
-            //}
-
+            //Clear list here since this is only called on FixedUpdate
+            lineList.Clear();
 
             for (int i = 0; i < ___floorRays; i++)
             {
@@ -93,11 +85,11 @@ namespace HueDebugging
 
                 if (highestHit.collider)
                 {
-                    DrawUtil.AddLine("ground" + i, vector, vector2, Color.green);
+                    lineList.Add(new DrawUtil.Line(vector, vector2, Color.green));
                 }
                 else
                 {
-                    DrawUtil.AddLine("ground" + i, vector, vector2, Color.red);
+                    lineList.Add(new DrawUtil.Line(vector, vector2, Color.red));
                 }
 
             }

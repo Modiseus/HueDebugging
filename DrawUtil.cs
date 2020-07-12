@@ -1,8 +1,5 @@
-﻿using DoorKey;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace HueDebugging
@@ -44,6 +41,13 @@ namespace HueDebugging
             public Vector3 pointA;
             public Vector3 pointB;
             public Color color;
+
+            public Line(Vector2 pointA, Vector2 pointB, Color color) : this()
+            {
+                this.pointA = pointA;
+                this.pointB = pointB;
+                this.color = color;
+            }
         }
 
         public static void AddText(String key, String text)
