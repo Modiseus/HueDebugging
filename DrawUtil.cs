@@ -6,36 +6,27 @@ namespace HueDebugging
 {
     class DrawUtil
     {
+        private static Vector2 scrollPosition = Vector2.zero;
+
+        public static Texture2D lineTex;
+
+        private static Dictionary<String, String> textDict = new Dictionary<string, string>();
+
         public static void OnFixedGUI()
         {
-
-            foreach (var pair in lineDict)
-            {
-                Line line = pair.Value;
-                DrawLine(line.pointA, line.pointB, line.color, 1);
-            }
 
             GUI.backgroundColor = Color.yellow;
 
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
-            foreach(var pair in textDict)
+            foreach (var pair in textDict)
             {
-                GUILayout.Label(pair.Key + ": "+ pair.Value);
+                GUILayout.Label(pair.Key + ": " + pair.Value);
             }
 
             GUILayout.EndScrollView();
 
         }
-
-
-        private static Vector2 scrollPosition = Vector2.zero;
-
-        public static Texture2D lineTex;
-        private static Dictionary<String, Line> lineDict = new Dictionary<string, Line>();
-
-        private static Dictionary<String, String> textDict = new Dictionary<string, string>();
-
         public struct Line
         {
             public Vector3 pointA;
@@ -53,18 +44,6 @@ namespace HueDebugging
         public static void AddText(String key, String text)
         {
             textDict[key] = text;
-        }
-
-        public static void AddLine(String key, Vector3 pointA, Vector3 pointB, Color color)
-        {
-
-            Line line = new Line();
-            line.pointA = pointA;
-            line.pointB = pointB;
-            line.color = color;
-
-            lineDict[key] = line;
-
         }
 
 
@@ -133,11 +112,6 @@ namespace HueDebugging
             GUI.matrix = matrix;
             GUI.color = savedColor;
         }
-
-
-
-
-
 
     }
 }

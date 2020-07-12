@@ -63,7 +63,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Hue\Mods\$(ProjectName)\"
-XCOPY /Y /R "$(ProjectDir)Info.json" "C:\Program Files (x86)\Steam\steamapps\common\Hue\Mods\$(ProjectName)\"</PostBuildEvent>
+    <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "$(ProjectDir)$(ProjectName)\"
+XCOPY /Y /R "$(ProjectDir)$(ProjectName)" "C:\Program Files (x86)\Steam\steamapps\common\Hue\Mods\$(ProjectName)\"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
