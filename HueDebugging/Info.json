@@ -1,9 +1,8 @@
 {
-  "Id": "Modiseus.HueDebugging",
+  "Id": "HueDebugging",
   "DisplayName" : "Hue Debugging",
   "Author": "Modiseus",
-  "Version": "1.0.0",
+  "Version": "0.1.0",
   "EntryMethod": "HueDebugging.Main.Load",
-  "HomePage": "https://github.com/Modiseus/HueDebugging",
-  "Repository": "https://raw.githubusercontent.com/Modiseus/HueMods/master/Repository.json"
+  "HomePage": "https://github.com/Modiseus/HueDebugging"
 }
