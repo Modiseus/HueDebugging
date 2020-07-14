@@ -29,6 +29,7 @@ namespace HueDebugging
             Vector3 pos = player.circleCollider.bounds.center;
             var colls = Physics2D.OverlapCircleAll(pos, Main.settings.DrawRadius, Main.settings.GetMask());
 
+
             foreach (var collider in colls)
             {
 
@@ -87,13 +88,9 @@ namespace HueDebugging
 
             }
 
-            Vector2 last = list[0];
-            Vector2 current;
             for (int i = 1; i < list.Count; i++)
             {
-                current = list[i];
-                DrawUtil.DrawLine(last, current, color);
-                last = current;
+                DrawUtil.DrawLine(list[i - 1], list[i], color);
             }
         }
 
@@ -130,9 +127,9 @@ namespace HueDebugging
                 float x = Convert.ToSingle(Math.Cos(rad));
                 float y = Convert.ToSingle(Math.Sin(rad));
 
-                Vector2 worldPos = col.radius * new Vector2(x, y) + col.offset;
+                Vector2 localPos = col.radius * new Vector2(x, y) + col.offset;
 
-                current = col.transform.TransformPoint(worldPos);
+                current = col.transform.TransformPoint(localPos);
 
                 DrawUtil.DrawLine(last, current, color);
 
@@ -144,17 +141,13 @@ namespace HueDebugging
 
         public static void DrawBox(BoxCollider2D col, Color color)
         {
-            float x = col.size.x / 2.0f;
-            float y = col.size.y / 2.0f;
+            float halfSizeX = col.size.x / 2.0f;
+            float halfSizeY = col.size.y / 2.0f;
 
-            x += col.offset.x;
-            y += col.offset.y;
-
-
-            Vector2 v0 = col.transform.TransformPoint(-x, -y, 0f);
-            Vector2 v1 = col.transform.TransformPoint(x, -y, 0f);
-            Vector2 v2 = col.transform.TransformPoint(x, y, 0f);
-            Vector2 v3 = col.transform.TransformPoint(-x, y, 0f);
+            Vector2 v0 = col.transform.TransformPoint(col.offset.x - halfSizeX, col.offset.y - halfSizeY, 0f);
+            Vector2 v1 = col.transform.TransformPoint(col.offset.x + halfSizeX, col.offset.y - halfSizeY, 0f);
+            Vector2 v2 = col.transform.TransformPoint(col.offset.x + halfSizeX, col.offset.y + halfSizeY, 0f);
+            Vector2 v3 = col.transform.TransformPoint(col.offset.x - halfSizeX, col.offset.y + halfSizeY, 0f);
 
             DrawUtil.DrawLine(v0, v1, color);
             DrawUtil.DrawLine(v1, v2, color);
