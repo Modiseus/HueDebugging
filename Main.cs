@@ -1,4 +1,5 @@
 ﻿
+using CurveManager;
 using HarmonyLib;
 using UnityEngine;
 using UnityModManagerNet;
@@ -72,7 +73,6 @@ namespace HueDebugging
                 {
                     PlayerCollision.OnFixedGUI();
                 }
-                
 
                 DrawUtil.OnFixedGUI();
 

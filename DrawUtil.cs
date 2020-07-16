@@ -15,15 +15,20 @@ namespace HueDebugging
         public static void OnFixedGUI()
         {
 
-            GUI.backgroundColor = Color.yellow;
+            Texture2D texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, Color.black);
+            texture.Apply();
+            GUIStyle style = new GUIStyle();
 
-            scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+            style.normal.background = texture;
+
+            scrollPosition = GUILayout.BeginScrollView(scrollPosition, style);
 
             foreach (var pair in textDict)
             {
                 GUILayout.Label(pair.Key + ": " + pair.Value);
             }
-
+                                  
             GUILayout.EndScrollView();
 
         }
