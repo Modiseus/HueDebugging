@@ -43,7 +43,7 @@ namespace HueDebugging
         {
             if (modEntry.Active)
             {
-
+                PlayerCollision.OnFixedUpdate(dt);
             }
         }
 
@@ -67,6 +67,8 @@ namespace HueDebugging
         {
             if (modEntry.Active)
             {
+                DrawUtil.DrawText("HueDebugging enabled");
+
                 CollisionDrawer.DrawAllColliders();
 
                 if (settings.PlayerGroundCheck)
@@ -77,7 +79,6 @@ namespace HueDebugging
                 DrawUtil.OnFixedGUI();
 
             }
-
         }
     }
 }

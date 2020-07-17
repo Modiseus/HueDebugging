@@ -15,11 +15,45 @@ namespace HueDebugging
 
         private static List<DrawUtil.Line> lineList = new List<DrawUtil.Line>();
 
+        private static Vector2 pos;
+        private static Vector2 vel;
+
+        public static void OnFixedUpdate(float dt)
+        {
+
+            GameManager gm = GameManager.instance;
+            if (gm == null)
+            {
+                return;
+            }
+
+            PlayerNew player = gm.Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            Rigidbody2D rigidbody = player.GetComponent<Rigidbody2D>();
+            if (rigidbody != null)
+            {
+                pos = rigidbody.position;
+                vel = rigidbody.velocity;                
+            }
+        }
+
         public static void OnFixedGUI()
         {
-            foreach(DrawUtil.Line line in lineList)
+            //Draw ground detection lines
+            foreach (DrawUtil.Line line in lineList)
             {
                 DrawUtil.DrawLine(line);
+            }
+
+
+            if (Main.settings.DisplayPlayerPositionAndVelocity)
+            {
+                DrawUtil.DrawText("Player Position: " + pos.x + " , " + pos.y);
+                DrawUtil.DrawText("Player Velocity: " + vel.x + " , " + vel.y);
             }
 
 
@@ -37,6 +71,8 @@ namespace HueDebugging
 
             CollisionDrawer.DrawCircle(player.circleCollider, Color.white);
             CollisionDrawer.DrawCircle((CircleCollider2D)player.topCollider, Color.white);
+
+            
         }
 
 

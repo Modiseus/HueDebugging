@@ -15,30 +15,45 @@ namespace HueDebugging
         public static void OnFixedGUI()
         {
 
-            Texture2D texture = new Texture2D(1, 1);
-            texture.SetPixel(0, 0, Color.black);
-            texture.Apply();
-            GUIStyle style = new GUIStyle();
-
-            style.normal.background = texture;
-
-            scrollPosition = GUILayout.BeginScrollView(scrollPosition, style);
+            scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
             foreach (var pair in textDict)
             {
-                GUILayout.Label(pair.Key + ": " + pair.Value);
+                DrawText(pair.Key + ": " + pair.Value);
             }
                                   
             GUILayout.EndScrollView();
 
         }
-        public struct Line
+
+        public static void DrawText(String text)
+        {
+            DrawText(text, Color.white);
+        }
+
+        public static void DrawText(String text, Color textColor)
+        {
+            DrawText(text, textColor, Color.black);
+        }
+        public static void DrawText(String text, Color textColor, Color backgroundColor)
+        {
+            Texture2D texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, backgroundColor);
+            texture.Apply();
+            GUIStyle style = new GUIStyle();
+
+            style.normal.background = texture;
+            style.normal.textColor = textColor;
+
+            GUILayout.Label(text, style);
+        }
+        public class Line
         {
             public Vector3 pointA;
             public Vector3 pointB;
             public Color color;
 
-            public Line(Vector2 pointA, Vector2 pointB, Color color) : this()
+            public Line(Vector2 pointA, Vector2 pointB, Color color)
             {
                 this.pointA = pointA;
                 this.pointB = pointB;

@@ -38,7 +38,9 @@ namespace HueDebugging
     }
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
-        [Draw("Drawing Distance", Min = 0.5, Max = 10, Precision = 1)] public float DrawRadius = 4;
+        [Draw("Display Player Position And Velocity")] public bool DisplayPlayerPositionAndVelocity = true;
+
+        [Draw("Drawing Distance", Min = 0.1, Max = 20, Precision = 2)] public float DrawRadius = 4;
         [Draw("Draw Player Collision")] public bool PlayerGroundCheck = true;
         [Draw("Draw Triggers")] public bool DrawTriggers = false;
 
