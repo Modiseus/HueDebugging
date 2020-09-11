@@ -2,6 +2,8 @@
 HueDebugging is a mod for [Hue](https://www.huethegame.com/) that was created to help with speedrunning the game.
 It can draw the colliders of all objects that are within a radius of Hue.
 
+![Screenshot](/Images/Screenshot.png)
+
 # Setup
 
 1. Download `UnityModManager.zip` from https://www.nexusmods.com/site/mods/21/ (you can use the mirror download if you don't have a login)
@@ -29,3 +31,5 @@ This will make sure that the game is unmodifed.
 This mod has a settings page on the Unity Mod Manager UI (open/close with `ctrl + F10` by default).
 
 There you can change which colliders should be displayed.
+
+![Settings](/Images/Settings.png)
