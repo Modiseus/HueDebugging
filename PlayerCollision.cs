@@ -69,6 +69,15 @@ namespace HueDebugging
                 return;
             }
 
+            if (player.door)
+            {
+                DrawUtil.DrawText("Door: " + player.door.doorID);
+            }
+            else
+            {
+                DrawUtil.DrawText("No door");
+            }
+
             CollisionDrawer.DrawCircle(player.circleCollider, Color.white);
             CollisionDrawer.DrawCircle((CircleCollider2D)player.topCollider, Color.white);
 
