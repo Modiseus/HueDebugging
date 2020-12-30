@@ -2,7 +2,7 @@
   "Id": "HueDebugging",
   "DisplayName" : "Hue Debugging",
   "Author": "Modiseus",
-  "Version": "1.1.1",
+  "Version": "1.1.2",
   "EntryMethod": "HueDebugging.Main.Load",
   "HomePage": "https://github.com/Modiseus/HueDebugging"
 }
