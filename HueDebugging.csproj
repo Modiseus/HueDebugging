@@ -64,7 +64,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "$(ProjectDir)$(ProjectName)\"
+IF $(ConfigurationName) == Debug (
 XCOPY /Y /R "$(ProjectDir)$(ProjectName)" "C:\Program Files (x86)\Steam\steamapps\common\Hue\Mods\$(ProjectName)\"
-</PostBuildEvent>
+) ELSE (
+CD "$(ProjectDir)"
+ZIP -r "$(ProjectName).zip" "$(ProjectName)"
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
