@@ -49,14 +49,6 @@ namespace HueDebugging
                 DrawUtil.DrawLine(line);
             }
 
-
-            if (Main.settings.DisplayPlayerPositionAndVelocity)
-            {
-                DrawUtil.DrawText("Player Position: " + pos.x + " , " + pos.y);
-                DrawUtil.DrawText("Player Velocity: " + vel.x + " , " + vel.y);
-            }
-
-
             GameManager gm = GameManager.instance;
             if (gm == null)
             {
@@ -67,6 +59,11 @@ namespace HueDebugging
             if (player == null)
             {
                 return;
+            }
+
+            if (Main.settings.DisplayPlayerPositionAndVelocity)
+            {
+                DrawPlayerPosition(player);
             }
 
             if (player.door)
@@ -82,6 +79,39 @@ namespace HueDebugging
             CollisionDrawer.DrawCircle((CircleCollider2D)player.topCollider, Color.white);
 
             
+        }
+
+        private static string xString = "";
+        private static string yString = "";
+        private static void DrawPlayerPosition(PlayerNew player)
+        {
+            DrawUtil.DrawText("Player Position: " + pos.x + " , " + pos.y);
+
+            GUILayout.BeginHorizontal();
+
+            xString = GUILayout.TextField(xString);
+            yString = GUILayout.TextField(yString);
+
+            GUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Set Player Position"))
+            {
+                float x;
+                float y;
+
+                if (float.TryParse(xString, out x) && float.TryParse(yString, out y))
+                {
+                    Rigidbody2D rigidbody = player.GetComponent<Rigidbody2D>();
+                    if (rigidbody != null)
+                    {
+                        rigidbody.position = new Vector2(x, y);
+                    }
+                }
+                
+            }
+
+            DrawUtil.DrawText("Player Velocity: " + vel.x + " , " + vel.y);
+
         }
 
 
