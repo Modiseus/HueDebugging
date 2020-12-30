@@ -1,13 +1,16 @@
 ﻿
 using CurveManager;
 using HarmonyLib;
+using System.Reflection;
 using UnityEngine;
 using UnityModManagerNet;
 
 
 namespace HueDebugging
 {
-
+#if DEBUG
+    [EnableReloading]
+#endif
     public static class Main
     {
         public static Settings settings;
@@ -25,9 +28,11 @@ namespace HueDebugging
             modEntry.OnFixedGUI = OnFixedGUI;
             modEntry.OnFixedUpdate = OnFixedUpdate;
 
-
+            modEntry.OnUnload = Unload;
+            
             return true;
         }
+
 
         public static void OnGUI(UnityModManager.ModEntry modEntry)
         {
@@ -62,12 +67,23 @@ namespace HueDebugging
             return true;
         }
 
+        public static bool Unload(UnityModManager.ModEntry modEntry)
+        {
+            Harmony harmony = new Harmony(modEntry.Info.Id);
+            harmony.UnpatchAll(modEntry.Info.Id);
+
+            return true;
+        }
 
         private static void OnFixedGUI(UnityModManager.ModEntry modEntry)
         {
             if (modEntry.Active)
             {
                 DrawUtil.DrawText("HueDebugging enabled");
+#if DEBUG
+                System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+                DrawUtil.DrawText("Version " + version.ToString());
+#endif
 
                 CollisionDrawer.DrawAllColliders();
 
