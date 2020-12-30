@@ -28,6 +28,8 @@ namespace HueDebugging
             modEntry.OnFixedGUI = OnFixedGUI;
             modEntry.OnFixedUpdate = OnFixedUpdate;
 
+            modEntry.OnUpdate = OnUpdate;
+
             modEntry.OnUnload = Unload;
             
             return true;
@@ -49,6 +51,14 @@ namespace HueDebugging
             if (modEntry.Active)
             {
                 PlayerCollision.OnFixedUpdate(dt);
+            }
+        }
+
+        private static void OnUpdate(UnityModManager.ModEntry modEntry, float dt)
+        {
+            if (modEntry.Active)
+            {
+                PlayerCollision.OnUpdate();
             }
         }
 

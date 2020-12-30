@@ -38,6 +38,9 @@ namespace HueDebugging
     }
     public class Settings : UnityModManager.ModSettings, IDrawable
     {
+        [Draw("Noclip")] public KeyBinding NoclipKey = new KeyBinding() { keyCode=KeyCode.E};
+        [Draw("Noclip Speed", Type = DrawType.Slider, Min = 1, Max = 20)] public int NoclipSpeed = 5;
+
         [Draw("Display Player Position And Velocity")] public bool DisplayPlayerPositionAndVelocity = true;
 
         [Draw("Drawing Distance", Min = 0.1, Max = 20, Precision = 2)] public float DrawRadius = 4;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using HarmonyLib;
+using UnityModManagerNet;
 
 namespace HueDebugging
 {
@@ -17,6 +18,42 @@ namespace HueDebugging
 
         private static Vector2 pos;
         private static Vector2 vel;
+
+        private static bool noclip = false;
+        private static bool noclipLast = false;
+
+        private static float moveX;
+        private static float moveY;
+
+        public static void OnUpdate()
+        {
+            if (Main.settings.NoclipKey.Down())
+            {
+                noclipLast = noclip;
+                noclip = !noclip;
+            }
+            DrawUtil.AddText("Noclip", noclip ? "On" : "Off");
+
+
+            if (noclip)
+            {
+                moveX = HueActions.Instance.Move.X;
+                if (Mathf.Abs(moveX) < 0.2f)
+                {
+                    moveX = 0f;
+                }
+                moveX = Mathf.Clamp(moveX * 1.5f, -1f, 1f);
+
+
+                moveY = HueActions.Instance.Move.Y;
+                if (Mathf.Abs(moveY) < 0.2f)
+                {
+                    moveY = 0f;
+                }
+                moveY = Mathf.Clamp(moveY * 1.5f, -1f, 1f);
+            }
+
+        }
 
         public static void OnFixedUpdate(float dt)
         {
@@ -37,8 +74,28 @@ namespace HueDebugging
             if (rigidbody != null)
             {
                 pos = rigidbody.position;
-                vel = rigidbody.velocity;                
+                vel = rigidbody.velocity;
+
+                if (noclip)
+                {
+
+                    player.playerState = PlayerNew.PlayerState.isDead;
+
+                    rigidbody.isKinematic = true;
+
+                    rigidbody.position += new Vector2(moveX * dt * Main.settings.NoclipSpeed, moveY * dt * Main.settings.NoclipSpeed);
+
+                }
+                else if (noclipLast)
+                {
+                    player.playerState = PlayerNew.PlayerState.isIdle;
+                    rigidbody.isKinematic = false;
+                }
+
+                noclipLast = noclip;
             }
+
+
         }
 
         public static void OnFixedGUI()
@@ -78,7 +135,7 @@ namespace HueDebugging
             CollisionDrawer.DrawCircle(player.circleCollider, Color.white);
             CollisionDrawer.DrawCircle((CircleCollider2D)player.topCollider, Color.white);
 
-            
+
         }
 
         private static string xString = "";
@@ -107,7 +164,7 @@ namespace HueDebugging
                         rigidbody.position = new Vector2(x, y);
                     }
                 }
-                
+
             }
 
             DrawUtil.DrawText("Player Velocity: " + vel.x + " , " + vel.y);
