@@ -19,7 +19,7 @@ Steam | `C:\Program Files (x86)\Steam\steamapps\common\Hue`
 Epic | `C:\Program Files\Epic Games\Hue`
 
 # Mod Installation
-1. Download the latest version of `HueDebugging.zip` from https://github.com/Modiseus/HueLevelLoaderMod/releases (you do not need to extract it)
+1. Download the latest version of `HueDebugging.zip` from https://github.com/Modiseus/HueDebugging/releases (you do not need to extract it)
 1. Open `UnityModManager.exe` and change to the `Mods` tab. Drop the zip file in the designated area or use the `Install Mod` button.
 
 # Before A Speedrun
